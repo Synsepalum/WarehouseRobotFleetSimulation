@@ -1,64 +1,42 @@
 #include "Task.h"
 
 //===========================================
-Task::Task(int id, int px, int py, int dx, int dy)
-    : taskID(id),
-      pickupX(px),
-      pickupY(py),
-      deliveryX(dx),
-      deliveryY(dy),
-      status(TaskStatus::Pending),
-      assignedRobotID(-1)
+Task::Task(int id, Position pickup, Position dropoff, int weight)
+    : id(id),
+      pickup(pickup),
+      dropoff(dropoff),
+      weight(weight),
+      status(TaskStatus::PENDING)
 {
 }
 //===========================================
-int Task::getTaskID() const {
-    return taskID;
+int Task::getId() const 
+{
+    return id;
 }
 //===========================================
-int Task::getPickupX() const {
-    return pickupX;
+Position Task::getPickup() const 
+{
+    return pickup;
 }
 //===========================================
-int Task::getPickupY() const {
-    return pickupY;
+Position Task::getDropoff() const 
+{
+    return dropoff;
 }
 //===========================================
-int Task::getDeliveryX() const {
-    return deliveryX;
+int Task::getWeight() const 
+{
+    return weight;
 }
 //===========================================
-int Task::getDeliveryY() const {
-    return deliveryY;
-}
-//===========================================
-TaskStatus Task::getStatus() const {
+TaskStatus Task::getStatus() const 
+{
     return status;
 }
 //===========================================
-int Task::getAssignedRobotID() const {
-    return assignedRobotID;
-}
-//===========================================
-bool Task::assignToRobot(int robotID) {
-    if (status != TaskStatus::Pending || robotID < 0) {
-        return false;
-    }
-
-    assignedRobotID = robotID;
-    status = TaskStatus::Assigned;
-    return true;
-}
-//===========================================
-void Task::markInProgress() {
-    if (status == TaskStatus::Assigned) {
-        status = TaskStatus::InProgress;
-    }
-}
-//===========================================
-void Task::markCompleted() {
-    if (status == TaskStatus::InProgress) {
-        status = TaskStatus::Completed;
-    }
+void Task::setStatus(TaskStatus newStatus) 
+{
+    status = newStatus; 
 }
 //===========================================

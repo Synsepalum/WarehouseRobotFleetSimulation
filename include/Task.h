@@ -1,39 +1,34 @@
 #ifndef TASK_H
 #define TASK_H
 
+#include "Position.h"
+
 enum class TaskStatus {
-      Pending,
-      Assigned,
-      InProgress,
-      Completed
+      PENDING,
+      ASSIGNED,
+      PICKED_UP,
+      COMPLETED,
+      FAILED
 };
 
 class Task {
 private:
-  int taskID;
+      int id;
+      Position pickup;
+      Position dropoff;
+      int weight;
+      TaskStatus status;
 
-  int pickupX;
-  int pickupY;
-
-  int deliveryX;
-  int deliveryY;
-
-  TaskStatus status;
-  int assignedRobotID;
 public:
-  Task(int id, int px, int py, int dx, int dy);
+      Task(int id, Position pickup, Position dropoff, int weight);
 
-  int getTaskID() const;
-  int getPickupX() const;
-  int getPickupY() const;
-  int getDeliveryX() const;
-  int getDeliveryY() const;
-  TaskStatus getStatus() const;
-  int getAssignedRobotID() const;
+      int getId() const;
+      Position getPickup() const;
+      Position getDropoff() const;
+      int getWeight() const;
+      TaskStatus getStatus() const;
 
-  bool assignToRobot(int robotID);
-  void markInProgress();
-  void markCompleted();
+      void setStatus(TaskStatus newStatus);
 };
 
 #endif

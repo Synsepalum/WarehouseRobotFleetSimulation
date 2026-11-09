@@ -72,7 +72,7 @@ bool Warehouse::isWalkable(const Position& p) const
 }
 
 // What's on that square. Off the map counts as a wall.
-char Warehouse::getCell(const Position& p) const
+char Warehouse::getTile(const Position& p) const
 {
     if (!isInBounds(p))
         return '|';

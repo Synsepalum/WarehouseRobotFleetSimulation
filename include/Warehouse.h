@@ -26,7 +26,7 @@ public:
 
     bool isInBounds(const Position& p) const;
     bool isWalkable(const Position& p) const;
-    char getCell(const Position& p) const;
+    char getTile(const Position& p) const;
 
     void display() const;
 };

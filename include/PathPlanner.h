@@ -1,3 +1,4 @@
+
 #ifndef PATH_PLANNER_H
 #define PATH_PLANNER_H
 
@@ -20,7 +21,7 @@ enum class PathStatus
 struct PathResult
 {
     PathStatus status;
-    std::vector<Position> path; // Includes the start and goal on success.
+    std::vector<Position> path; // Includes start and goal on success.
 
     bool found() const { return status == PathStatus::Success; }
 };
@@ -28,28 +29,32 @@ struct PathResult
 class PathPlanner
 {
 public:
-    // The planner owns a copy of the grid, so the caller can modify its grid safely.
-    // Throws std::invalid_argument for an empty or nonrectangular grid.
+    // Integer grid: 0 = open, nonzero = obstacle.
     explicit PathPlanner(const std::vector<std::vector<int> >& grid);
 
-    // Refresh the map when fixed obstacles change.
-    // Throws std::invalid_argument for an empty or nonrectangular grid.
+    // Character grid: wallCharacter is blocked; others are walkable.
+    PathPlanner(const std::vector<std::vector<char> >& grid,
+                char wallCharacter);
+
+    // Update the warehouse layout.
     void setGrid(const std::vector<std::vector<int> >& grid);
+
+    void setGrid(const std::vector<std::vector<char> >& grid,
+                 char wallCharacter);
 
     int getRows() const;
     int getCols() const;
+
     bool isInside(const Position& position) const;
     bool isWalkable(const Position& position) const;
 
-    // Breadth-first search: shortest route in number of 4-direction moves.
-    // temporarilyBlocked can represent other robots' CURRENT positions.
-    // The start is exempt from temporary blocking because a robot occupies it.
-    // A temporarily blocked goal is treated as blocked.
-    // Never moves diagonally and never mutates the map.
+    // Find the shortest path using BFS.
+    // Optional occupied positions can represent other robots.
     PathResult findPath(
         const Position& start,
         const Position& goal,
-        const std::vector<Position>& temporarilyBlocked = std::vector<Position>()
+        const std::vector<Position>& temporarilyBlocked =
+            std::vector<Position>()
     ) const;
 
 private:

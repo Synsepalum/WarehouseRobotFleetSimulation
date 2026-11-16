@@ -5,11 +5,11 @@
 #include "Position.h"
 using namespace std;
 
-//   Warehouse map: 2D grid of characters
+//   Warehouse map
 //   '_' = floor
 //   '|' = wall
 //   'P' = pickup point
-//   'D' = drop but that off point
+//   'D' = drop off point
 
 class Warehouse
 {
@@ -28,7 +28,15 @@ public:
     bool isWalkable(const Position& p) const;
     char getTile(const Position& p) const;
 
+    // For PathPlanner: 1 = wall & 0 = open
+    vector<vector<int>> toPlannerGrid() const;
+
+    // Just the map
     void display() const;
+
+    // Prints the map with robot IDs 
+    void display(const vector<Position>& robotSpots,
+                 const vector<int>& robotIds) const;
 };
 
 #endif

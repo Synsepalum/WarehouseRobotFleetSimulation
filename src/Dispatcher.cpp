@@ -1,5 +1,13 @@
 #include "Dispatcher.h"
+#include <cstdlib>
 using namespace std;
+
+// Rough number of steps between two spots.
+// Ignores walls, so the real trip can be longer.
+static int distance(const Position& a, const Position& b)
+{
+    return abs(a.getRow() - b.getRow()) + abs(a.getCol() - b.getCol());
+}
 
 // Removes all tasks
 void Dispatcher::clear()
@@ -17,10 +25,14 @@ void Dispatcher::addTask(const Task& task)
 // and can carry the task's weight
 bool Dispatcher::canTake(const Robot& robot, const Task& task) const
 {
+    int steps = distance(robot.getPosition(), task.getPickup())
+              + distance(task.getPickup(), task.getDropoff());
+    int needed = steps * robot.batteryCostPerStep();
+
     return robot.getStatus() == RobotStatus::IDLE
-        && robot.getTaskId() == -1
-        && robot.getBattery() > 0
-        && robot.canCarry(task.getWeight());
+        && robot.getTaskId() == Robot::NO_TASK
+        && robot.canCarry(task.getWeight())
+        && robot.getBattery() >= needed;
 }
 
 // Goes through pending tasks in the order

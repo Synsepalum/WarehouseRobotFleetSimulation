@@ -37,6 +37,7 @@ static string taskStatusText(TaskStatus status)
 // Just sets everything up with reset()
 //======================================
 Simulation::Simulation()
+    : planner(warehouse.toPlannerGrid())   // planner needs the map's walls
 {
     reset();
 }
@@ -132,11 +133,11 @@ void Simulation::updateRobot(Robot& robot)
         return;
     }
 
-    // Ask the planner for a route
-    vector<Position> path = planner.findPath(warehouse, robot.getPosition(), target);
+    // Ask the planner for a route (the path includes the robot's own spot first)
+    PathResult route = planner.findPath(robot.getPosition(), target);
 
     // No route means walls block the way
-    if (path.empty())
+    if (!route.found() || route.path.size() < 2)
     {
         task->setStatus(TaskStatus::FAILED);
         robot.clearTask();
@@ -146,7 +147,7 @@ void Simulation::updateRobot(Robot& robot)
     }
 
     // Try to move one square. moveTo() returns false if the battery is too low.
-    if (!robot.moveTo(path[0]))
+    if (!robot.moveTo(route.path[1]))
     {
         robot.setStatus(RobotStatus::OUT_OF_BATTERY);
         robot.clearTask();

@@ -67,3 +67,4 @@ vcpkg_installed/
 Testing/
 .cache/
 dispatcher_tests
+WarehouseSim

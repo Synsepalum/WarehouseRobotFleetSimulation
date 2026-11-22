@@ -74,6 +74,10 @@ void Simulation::addTask(const Position& pickup, const Position& dropoff, int we
     if (weight <= 0)
         throw invalid_argument("Weight has to be more than 0.");
 
+    // Make sure a robot could actually get from the pickup to the drop-off
+    if (!planner.findPath(pickup, dropoff).found())
+        throw invalid_argument("Drop-off can't be reached from the pickup spot (walls are in the way).");
+
     dispatcher.addTask(Task(nextTaskId, pickup, dropoff, weight));
     nextTaskId++;
 }
@@ -173,11 +177,21 @@ void Simulation::updateRobot(Robot& robot)
 }
 
 //======================================
-// Shows the map
+// Shows the map with each robot's number
+// on the square where it is
 //======================================
 void Simulation::displayWarehouse() const
 {
-    warehouse.display();
+    vector<Position> robotSpots;
+    vector<int> robotIds;
+
+    for (const auto& robot : robots)
+    {
+        robotSpots.push_back(robot->getPosition());
+        robotIds.push_back(robot->getId());
+    }
+
+    warehouse.display(robotSpots, robotIds);
 }
 
 //======================================
